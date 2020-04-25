@@ -24,23 +24,23 @@ const Layout = ({ children }) => {
   `)
 
   return (
-    <>
+    <div className="h-screen flex flex-col justify-between">
       <Header siteTitle={data.site.siteMetadata.title} />
-      <div
-        style={{
-          margin: `0 auto`,
-          maxWidth: 960,
-          padding: `0 1.0875rem 1.45rem`,
-        }}
-      >
-        <main>{children}</main>
-        <footer>
-          © {new Date().getFullYear()}, Built with
-          {` `}
-          <a href="https://www.gatsbyjs.org">Gatsby</a>
-        </footer>
+      <div className="px-4 h-full">
+        <main className="my-1 h-full">{children}</main>
       </div>
-    </>
+      <footer className="py-2 border-t text-xs px-4 border-gray-500 flex flex-row justify-between bg-gray-300">
+        <div>
+          <span className="py-1">
+            Built using {` `}</span>
+            <a className="text-indigo-800 py-1 underline hover:bg-indigo-800 hover:text-gray-100" href="https://www.gatsbyjs.org"> Gatsby</a>
+        </div>
+        <div >
+        <span className="py-1">
+            © {new Date().getFullYear()} Built by </span><a className="text-indigo-800 py-1 underline hover:bg-indigo-800 hover:text-gray-100" href="https://softwarecrafts.uk">Software Crafts</a>
+        </div>
+      </footer>
+    </div>
   )
 }
 

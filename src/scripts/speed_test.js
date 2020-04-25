@@ -1,0 +1,41 @@
+const FastSpeedtest = require("fast-speedtest-api");
+const fs = require('fs-extra');
+require('dotenv').config();
+
+let speedtest = new FastSpeedtest({
+    token: process.env.FAST_API_KEY, // required
+    verbose: false, // default: false
+    timeout: 10000, // default: 5000
+    https: true, // default: true
+    urlCount: 5, // default: 5
+    bufferSize: 8, // default: 8
+    unit: FastSpeedtest.UNITS.Mbps // default: Bps
+});
+
+const getFilePath = function(date) {
+    const d = date.getDate();
+    const m = date.getMonth();
+    const y = date.getFullYear();
+    const t = date.getTime();
+    return `./data/y-${y}/m-${m}/d-${d}/${t}.json`
+}
+
+
+speedtest.getSpeed().then(s => {
+    const date = new Date()
+    const d = {
+        "speed": s,
+        "datetime": date
+    }
+    const filename = getFilePath(date)
+
+    fs.outputFile(filename, JSON.stringify(d), function (err) {
+        if (err) {
+            console.log(err); // => null
+            return
+        }
+        console.log('Success');
+    });
+}).catch(e => {
+    console.error(e.message);
+});
