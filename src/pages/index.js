@@ -27,7 +27,7 @@ const StatBox = ({text, children}) => (
 )
 
 const IndexPage = ({ data }) => {
-  var storedThreshold = window !== undefined && window.localStorage.getItem("threshold")
+  var storedThreshold = typeof window !== undefined && window.localStorage.getItem("threshold")
   const [threshold, setThreshold] = useState(storedThreshold || 40)
   const today = moment();
   const lastHour = moment({...today.toObject(), hour: today.hour() - 1})
@@ -35,7 +35,7 @@ const IndexPage = ({ data }) => {
   const lastWeek = moment({...today.toObject(), date: today.date() - 7})
   const [minDate, setMinDate] = useState(yesterday)
   const updateThreshold = (value) => {
-    window !== undefined && window.localStorage.setItem("threshold", value)
+    typeof window !== undefined && window.localStorage.setItem("threshold", value)
     setThreshold(value)
   }
   const graphData = data.allJson.edges.map(({node}) => ({speed: node.speed, datetime: moment(node.datetime)}))
