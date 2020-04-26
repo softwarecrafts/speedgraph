@@ -1,7 +1,6 @@
 #!/bin/sh
 yarn
-export PATH=$(pwd)/src/scripts:$(pwd)/node_modules/.bin:$PATH
 
-echo $PATH
+export PATH=$(realpath '../src/scripts'):$(realpath '../node_modules/.bin'):$PATH
 
-# speed_test && gatsby build && cp -r ./public/* $DEPLOY_DIR
+speed_test && gatsby build && cp -r ./public/* $DEPLOY_DIR
