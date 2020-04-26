@@ -1,3 +1,5 @@
 #!/bin/sh
 
-node ./src/scripts/speed_test.js && gatsby build && cp -r build $DEPLOY_DIR
+export PATH=./src/scripts:./node_modules/.bin:$PATH
+
+node speed_test.js && gatsby build && cp -r build $DEPLOY_DIR
