@@ -7,7 +7,7 @@ import {
   XAxis,
   YAxis,
   ReferenceLine,
-  Tooltip,
+  // Tooltip,
   ResponsiveContainer
 } from "recharts"
 import moment from "moment"
@@ -27,6 +27,20 @@ const StatBox = ({text, children}) => (
 )
 
 const IndexPage = ({ data }) => {
+  var formatOptions = {
+    lastHour: {
+        tickCount: 12,
+        labelFormat: "HH:mm"
+    },
+    yesterday: {
+        tickCount: 24,
+        labelFormat: "HH:mm"
+    },
+    lastWeek: {
+        tickCount: 14,
+        labelFormat: "DD/MM HH:mm"
+    }
+  }
   var storedThreshold = typeof window !== `undefined` && window.localStorage.getItem("threshold")
   const [threshold, setThreshold] = useState(storedThreshold || 40)
   const today = moment();
@@ -34,6 +48,7 @@ const IndexPage = ({ data }) => {
   const yesterday = moment({...today.toObject(), date: today.date() - 1})
   const lastWeek = moment({...today.toObject(), date: today.date() - 7})
   const [minDate, setMinDate] = useState(yesterday)
+  const [chosenFormat, setChosenFormat] = useState(formatOptions['yesterday'])
   const updateThreshold = (value) => {
     typeof window !== `undefined` && window.localStorage.setItem("threshold", value)
     setThreshold(value)
@@ -43,15 +58,9 @@ const IndexPage = ({ data }) => {
   const weekData = graphData.filter(point => point.datetime >= lastWeek)
 
   const visibleGraphData = graphData.filter(point => point.datetime >= minDate)
-
-
   const reducer = (accumulator, currentValue) => accumulator + Number(currentValue.speed);
   const avg = arr => !isEmpty(arr) ? Math.round((arr.reduce(reducer, 0) / arr.length + Number.EPSILON) * 100) / 100 : '-'
-
-
-
   const dailyMAvg = visibleGraphData.map((point, idx) => ({...point, avg:ma(visibleGraphData.map(n => n.speed), 3)[idx]}))
-
 
   const dailyAvg = avg(dayData)
   const weeklyAvg = avg(weekData)
@@ -70,13 +79,13 @@ const IndexPage = ({ data }) => {
           <hr/>
           <h2 className="text-lg text-indigo-600 my-2">Set Date Range</h2>
           <span className="relative z-0 inline-flex shadow-sm mb-2">
-            <button type="button" className="relative inline-flex items-center px-4 py-2 rounded-l-md border border-gray-300 bg-white text-sm leading-5 font-medium text-gray-700 hover:text-gray-500 focus:z-10 focus:outline-none focus:border-blue-300 focus:shadow-outline-blue active:bg-gray-100 active:text-gray-700 transition ease-in-out duration-150" onClick={() => setMinDate(lastWeek)}>
+            <button type="button" className="relative inline-flex items-center px-4 py-2 rounded-l-md border border-gray-300 bg-white text-sm leading-5 font-medium text-gray-700 hover:text-gray-500 focus:z-10 focus:outline-none focus:border-blue-300 focus:shadow-outline-blue active:bg-gray-100 active:text-gray-700 transition ease-in-out duration-150" onClick={() => {setMinDate(lastWeek); setChosenFormat(formatOptions['lastWeek'])}}>
               Week
             </button>
-            <button type="button" className="-ml-px relative inline-flex items-center px-4 py-2 border border-gray-300 bg-white text-sm leading-5 font-medium text-gray-700 hover:text-gray-500 focus:z-10 focus:outline-none focus:border-blue-300 focus:shadow-outline-blue active:bg-gray-100 active:text-gray-700 transition ease-in-out duration-150" onClick={() => setMinDate(yesterday)}>
+            <button type="button" className="-ml-px relative inline-flex items-center px-4 py-2 border border-gray-300 bg-white text-sm leading-5 font-medium text-gray-700 hover:text-gray-500 focus:z-10 focus:outline-none focus:border-blue-300 focus:shadow-outline-blue active:bg-gray-100 active:text-gray-700 transition ease-in-out duration-150" onClick={() => {setMinDate(yesterday); setChosenFormat(formatOptions['yesterday'])}}>
               Day
             </button>
-            <button type="button" className="-ml-px relative inline-flex items-center px-4 py-2 rounded-r-md border border-gray-300 bg-white text-sm leading-5 font-medium text-gray-700 hover:text-gray-500 focus:z-10 focus:outline-none focus:border-blue-300 focus:shadow-outline-blue active:bg-gray-100 active:text-gray-700 transition ease-in-out duration-150" onClick={() => setMinDate(lastHour)}>
+            <button type="button" className="-ml-px relative inline-flex items-center px-4 py-2 rounded-r-md border border-gray-300 bg-white text-sm leading-5 font-medium text-gray-700 hover:text-gray-500 focus:z-10 focus:outline-none focus:border-blue-300 focus:shadow-outline-blue active:bg-gray-100 active:text-gray-700 transition ease-in-out duration-150" onClick={() => {setMinDate(lastHour); setChosenFormat(formatOptions['lastHour'])}}>
               Hour
             </button>
           </span>
@@ -101,9 +110,15 @@ const IndexPage = ({ data }) => {
                 dataMax => today.valueOf(),
               ]}
               tickFormatter={unixTime =>
-                moment(new Date(unixTime).getTime()).format("HH:mm")
+                {
+                    const m = moment(new Date(unixTime).getTime())
+                    const format = m.hour() === 0 ? "DD/MM " + chosenFormat["labelFormat"] : chosenFormat["labelFormat"]
+                    console.log(format);
+                    return m.format(format)
+                }
               }
-              tickCount={12}
+              tickCount={chosenFormat["tickCount"]}
+              interval={0}
               tick={{ fontSize: '12px', width: 50, wordWrap: 'break-word' }}
             />
             <YAxis label={{ value: 'Speed (Mb/s)', angle: -90, position: 'center', fontSize: '14px'  }} tick={{ fontSize: '12px', width: 50, wordWrap: 'break-word' }} />
