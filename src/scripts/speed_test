@@ -1,44 +1,46 @@
 #!/usr/bin/env node
-"use strict";
+"use strict"
 
-const FastSpeedtest = require("fast-speedtest-api");
-const fs = require('fs-extra');
-require('dotenv').config();
+const FastSpeedtest = require("fast-speedtest-api")
+const fs = require("fs-extra")
+require("dotenv").config()
 
 let speedtest = new FastSpeedtest({
-    token: process.env.FAST_API_KEY, // required
-    verbose: false, // default: false
-    timeout: 10000, // default: 5000
-    https: true, // default: true
-    urlCount: 5, // default: 5
-    bufferSize: 8, // default: 8
-    unit: FastSpeedtest.UNITS.Mbps // default: Bps
-});
+  token: process.env.FAST_API_KEY, // required
+  verbose: false, // default: false
+  timeout: 10000, // default: 5000
+  https: true, // default: true
+  urlCount: 5, // default: 5
+  bufferSize: 8, // default: 8
+  unit: FastSpeedtest.UNITS.Mbps // default: Bps
+})
 
 const getFilePath = function(date) {
-    const d = date.getDate();
-    const m = date.getMonth();
-    const y = date.getFullYear();
-    const t = date.getTime();
-    return `./data/y-${y}/m-${m}/d-${d}/${t}.json`
+  const d = date.getDate()
+  const m = date.getMonth()
+  const y = date.getFullYear()
+  const t = date.getTime()
+  return `${process.env.SRC_DIR}/data/y-${y}/m-${m}/d-${d}/${t}.json`
 }
 
-
-speedtest.getSpeed().then(s => {
+speedtest
+  .getSpeed()
+  .then(s => {
     const date = new Date()
     const d = {
-        "speed": s,
-        "datetime": date
+      speed: s,
+      datetime: date
     }
     const filename = getFilePath(date)
 
-    fs.outputFile(filename, JSON.stringify(d), function (err) {
-        if (err) {
-            console.log(err); // => null
-            return
-        }
-        console.log('Success');
-    });
-}).catch(e => {
-    console.error(e.message);
-});
+    fs.outputFile(filename, JSON.stringify(d), function(err) {
+      if (err) {
+        console.log(err) // => null
+        return
+      }
+      console.log("Success")
+    })
+  })
+  .catch(e => {
+    console.error(e.message)
+  })
