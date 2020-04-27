@@ -90,8 +90,8 @@ const IndexPage = ({ data }) => {
               stroke="red"
               strokeDasharray="3 3"
             />
-            <Line type="monotone" dataKey="speed" stroke="#8884d8" />
-            <Line type="monotone" dataKey="avg" stroke="#333" strokeDasharray="3 1 3" />
+            <Line type="monotone" dataKey="speed" stroke="#8884d8" dot={false} />
+            <Line type="monotone" dataKey="avg" stroke="#333" strokeDasharray="3 1 3" dot={false} />
             <CartesianGrid stroke="#ccc" strokeDasharray="5 5" />
             <XAxis
               dataKey="datetime"
