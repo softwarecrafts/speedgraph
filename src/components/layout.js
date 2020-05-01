@@ -29,7 +29,7 @@ const Layout = ({ children }) => {
       <div className="px-4 h-full">
         <main className="my-1 h-full">{children}</main>
       </div>
-      <footer className="py-2 border-t text-xs px-4 border-gray-500 flex flex-row justify-between bg-gray-300">
+      <footer className="py-1 border-t text-xs px-4 border-gray-500 flex flex-row justify-between bg-gray-300">
         <div>
           <span className="py-1">
             Built using {` `}</span>

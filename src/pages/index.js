@@ -20,8 +20,8 @@ import Layout from "../components/layout"
 import SEO from "../components/seo"
 
 const StatBox = ({text, children}) => (
-    <div className="border-2 border-gray-500 m-8 px-4 py-4 text-center row-span-1">
-        <h2 className="text-5xl text-indigo-900">{children}</h2>
+    <div className="border-2 border-gray-500 mx-8 my-2 flex-col flex justify-center px-4 py-2 text-center col-span-1 row-span-1">
+        <h2 className="text-5xl text-indigo-900 mb-2">{children}</h2>
         <h2 className="text-3xl text-indigo-600">{text}</h2>
     </div>
 )
@@ -44,10 +44,10 @@ const IndexPage = ({ data }) => {
   var storedThreshold = typeof window !== `undefined` && window.localStorage.getItem("threshold")
   const [threshold, setThreshold] = useState(storedThreshold || 40)
   const today = moment();
-  const lastHour = today.subtract(1, 'hour');
-  console.log(today.date());
-  const yesterday = today.subtract(1, 'day');
-  const lastWeek = today.subtract(1, 'week');
+  const lastHour = moment(today).subtract(1, 'hour');
+  const yesterday = moment(today).subtract(1, 'day');
+  const lastWeek = moment(today).subtract(1, 'week');
+  console.log(today, lastHour, yesterday);
   const [minDate, setMinDate] = useState(yesterday)
   const [chosenFormat, setChosenFormat] = useState(formatOptions['yesterday'])
   const updateThreshold = (value) => {
@@ -66,15 +66,14 @@ const IndexPage = ({ data }) => {
   const dailyAvg = avg(dayData)
   const weeklyAvg = avg(weekData)
   const thresholdStatus = dailyAvg >= threshold ? '😊' : '😡'
-  console.log(dailyMAvg, minDate, today);
   return (
   <Layout>
     <SEO title="Home" />
-    <div className="grid gap-4 grid-cols-4 grid-rows-3 max-h-full">
-      <StatBox text={"Daily Average (Mb/s)"} >{dailyAvg}</StatBox>
-      <StatBox text={"Weekly Average (Mb/s)"} >{weeklyAvg}</StatBox>
+    <div className="grid gap-4 grid-cols-4 grid-rows-3 max-h-full ">
+      <StatBox text={"Daily Average"} >{dailyAvg}</StatBox>
+      <StatBox text={"Weekly Average"} >{weeklyAvg}</StatBox>
       <StatBox text={"Threshold Status"} >{thresholdStatus}</StatBox>
-      <div className="border-2 border-gray-500 m-8 px-6 py-4 text-left">
+      <div className="border-2 border-gray-500 mx-8 my-2 px-6 py-4 text-left">
           <h2 className="text-lg text-indigo-600">Set Threshold</h2>
           <input className="my-2 bg-white focus:outline-none focus:shadow-outline border border-gray-300 py-1 px-2 block w-full appearance-none leading-normal text-indigo-600" type="text" placeholder="50" onChange={e => updateThreshold(e.target.value)} value={threshold}/>
           <hr/>
