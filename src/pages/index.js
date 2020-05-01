@@ -44,9 +44,10 @@ const IndexPage = ({ data }) => {
   var storedThreshold = typeof window !== `undefined` && window.localStorage.getItem("threshold")
   const [threshold, setThreshold] = useState(storedThreshold || 40)
   const today = moment();
-  const lastHour = moment({...today.toObject(), hour: today.hour() - 1})
-  const yesterday = moment({...today.toObject(), date: today.date() - 1})
-  const lastWeek = moment({...today.toObject(), date: today.date() - 7})
+  const lastHour = today.subtract(1, 'hour');
+  console.log(today.date());
+  const yesterday = today.subtract(1, 'day');
+  const lastWeek = today.subtract(1, 'week');
   const [minDate, setMinDate] = useState(yesterday)
   const [chosenFormat, setChosenFormat] = useState(formatOptions['yesterday'])
   const updateThreshold = (value) => {
@@ -65,7 +66,7 @@ const IndexPage = ({ data }) => {
   const dailyAvg = avg(dayData)
   const weeklyAvg = avg(weekData)
   const thresholdStatus = dailyAvg >= threshold ? '😊' : '😡'
-
+  console.log(dailyMAvg, minDate, today);
   return (
   <Layout>
     <SEO title="Home" />
@@ -113,7 +114,6 @@ const IndexPage = ({ data }) => {
                 {
                     const m = moment(new Date(unixTime).getTime())
                     const format = m.hour() === 0 ? "DD/MM " + chosenFormat["labelFormat"] : chosenFormat["labelFormat"]
-                    console.log(format);
                     return m.format(format)
                 }
               }
